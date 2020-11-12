@@ -32,10 +32,17 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // 谷歌 Support 包
+//    implementation "androidx.appcompat:appcompat:$rootProject.ext.appcompatVersion"
+//    implementation "com.google.android.material:material:$rootProject.ext.materialVersion"
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
 
+// 标题栏：https://github.com/getActivity/TitleBar
+    implementation 'com.hjq:titlebar:6.0'
 
+    // 吐司工具类：https://github.com/getActivity/ToastUtils
+    implementation 'com.hjq:toast:8.0'
     implementation 'com.jakewharton:butterknife:8.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.1.0'//studio3.0，Gradle已经和这个不兼容,加这个解决报nullpointer空指针异常
 
