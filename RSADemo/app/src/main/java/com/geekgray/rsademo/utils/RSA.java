@@ -16,7 +16,7 @@ public class RSA
      * RSA签名
      *
      * @param content       待签名数据
-     * @param privateKey    商户私钥
+     * @param privateKey    用户私钥
      * @param input_charset 编码格式
      *
      * @return 签名值
@@ -52,7 +52,7 @@ public class RSA
      *
      * @param content           待签名数据
      * @param sign              签名值
-     * @param alipay_public_key 支付宝公钥
+     * @param alipay_public_key 公钥
      * @param input_charset     编码格式
      *
      * @return 布尔值

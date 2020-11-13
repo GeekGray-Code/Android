@@ -4,12 +4,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.geekgray.rsademo.R;
+import com.geekgray.rsademo.entity.KeyPairGen;
 import com.geekgray.rsademo.utils.Base64Utils;
 import com.geekgray.rsademo.utils.RSA;
 import com.geekgray.rsademo.utils.RSAUtils;
@@ -18,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -82,30 +86,29 @@ public class MainActivity1 extends AppCompatActivity
     @BindView(R.id.tv_text_readfile)
     TextView tvTextReadFile;
 
+    /**
+     * 生成公钥和私钥
+     */
+    @BindView(R.id.generate_keybit_spinner)
+    Spinner generateKeyBitSpinner;
+    @BindView(R.id.generate_rsa_publickey_btn)
+    Button generateRsaPublicKeyBtn;
+    @BindView(R.id.tv_text_generate_rsa_publickey)
+    TextView tvTextGenerateRsaPublicKey;
+    @BindView(R.id.generate_rsa_privatekey_btn)
+    Button generateRsaPrivateKeyBtn;
+    @BindView(R.id.tv_text_generate_rsa_privatekey)
+    TextView tvTextGenerateRsaPrivateKey;
+
 
     private static String content = null;
     private String fileName = null;
-    /* 密钥内容 base64 code */
-    private static String PUCLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+iRXVDOsZikPvaIwzTDhcKx3r\n" +
-            "SZNbB/H/MrdUj/GkiSgDL7bTXjyb0cAwefD+/JxXBy6EMuPzBMt7flTWNXGBUNvw\n" +
-            "HpaUPicdVAH4h8V0PvUiQKG/pS6oynMvARjZIHWBg8VEqaTcBdpuq+1jhtDxhuBM\n" +
-            "SFpt7b8gpWo//BG0ZQIDAQAB";
 
-    private static String PRIVATE_KEY = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAL6JFdUM6xmKQ+9o\n" +
-            "jDNMOFwrHetJk1sH8f8yt1SP8aSJKAMvttNePJvRwDB58P78nFcHLoQy4/MEy3t+\n" +
-            "VNY1cYFQ2/AelpQ+Jx1UAfiHxXQ+9SJAob+lLqjKcy8BGNkgdYGDxUSppNwF2m6r\n" +
-            "7WOG0PGG4ExIWm3tvyClaj/8EbRlAgMBAAECgYAX3y8IEWVHPuaCEVQ3fR42lgRa\n" +
-            "nU5EAnvUYHNNufcpiTGlLI44bz8iuqXcrPp/yACCetjeIU4j/X7NCyfv6qQ8ux/0\n" +
-            "WdGY4WZtc9EV38vgxzlfOHWrtJ1qVBX6vbs8TZabaz9XSaE+u+akhGACf5dHm4HN\n" +
-            "uhwDIvtu0AwBzwMIBQJBAN5BI8q0S5EI3nu4Bi3ZzssFRwh9TD8Fa91TPntFGi0J\n" +
-            "q3iGTq2qb2j3TKOn0lZBVg82yicNlxklOemwWEqxDlcCQQDbdw2+2y9MNVJSxOvO\n" +
-            "wEKdzcvimB1m7896GcWRpOp6/BBZyj8A20QztpEmJ5v9V8sFIjiVqdWlWWar7Lqr\n" +
-            "9SWjAkBRcQ87hSu3nsdgEIP7IzgavvlTjA53fXYUKR/ZLe40mLmDtbt4+d5PWWd1\n" +
-            "BNcXkmOFua8D9n/qz/BTyLHh1NWLAkEAl6MA6lhDq+JDyVCqpaYN4T7qmtwDpLYZ\n" +
-            "owHfkqxiHyu+mGu3cH4P97MzQyunCjr42ck1U6OPLLpCyJO+v0WZBQJASReT45oU\n" +
-            "Xvp/eK/JEdMu68GFzDp9gbsKpRRNv2/fL+ZCRzEWzkElfDWmJy5g/FhkEatgfAuZ\n" +
-            "Cxl0w8M0aLiBQw==";
+    /* 密钥对内容 base64 code */
+    private static String PUCLIC_KEY = "";
+    private static String PRIVATE_KEY = "";
 
+    KeyPairGen keyPairGen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -113,21 +116,86 @@ public class MainActivity1 extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main1);
         ButterKnife.bind(this);
+
         setListener();
     }
 
 
     /**
-     * 或者edText输入的内容
+     * 获取明文输入框edText输入的内容
      */
     private void getContent()
     {
         content = edText.getText().toString().trim();
     }
 
+    /*
+     * @Author GeekGray
+     * @Description //TODO
+     * @Date
+     * @Param
+     * @return
+     **/
+    private void generateKeyPair() throws NoSuchAlgorithmException
+    {
+        keyPairGen = RSAUtils.genKeyPair(keyPairGen);
+        PUCLIC_KEY = keyPairGen.getPublicKeyBase64();
+        PRIVATE_KEY = keyPairGen.getPrivateKeyBase64();
+    }
+
 
     private void setListener()
     {
+
+        /*
+         * 选择生成密钥对的位数
+         */
+        generateKeyBitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id)
+            {
+                keyPairGen = new KeyPairGen();
+                String[] keyBits = getResources().getStringArray(R.array.key_bits);
+                keyPairGen.setKeySize(Integer.parseInt(keyBits[pos]));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView)
+            {
+
+            }
+        });
+
+
+        /*
+         * 生成密钥对
+         */
+        generateRsaPublicKeyBtn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                try
+                {
+                    generateKeyPair();
+                    String textContent = "生成密钥对位数: " + keyPairGen.getKeySize() + "\n\n" +
+
+                            "publicKeyBase64.length(): " + keyPairGen.getPublicKeyBase64().length() + "\n\n" +
+                            "publicKeyBase64: " + keyPairGen.getPublicKeyBase64() + "\n\n\n" +
+                            "privateKeyBase64.length(): " + keyPairGen.getPrivateKeyBase64().length() + "\n\n" +
+                            "privateKeyBase64: " + keyPairGen.getPrivateKeyBase64();
+                    tvTextGenerateRsaPublicKey.setText(textContent);
+                }
+                catch (NoSuchAlgorithmException e)
+                {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
         /*
          * 签名
          */
@@ -265,7 +333,7 @@ public class MainActivity1 extends AppCompatActivity
             {
                 try
                 {
-                    fileName=edTextFileName.getText().toString().trim() + ".txt";
+                    fileName = edTextFileName.getText().toString().trim() + ".txt";
                     //用MODE_PRIVAT模式，用输入的文件名创建一个 rsaencrypt.txt文件,若输入为空则用默认文件名
                     if (edTextFileName.getText().toString().trim().isEmpty())
                     {
@@ -274,9 +342,18 @@ public class MainActivity1 extends AppCompatActivity
                     FileOutputStream outputStream = openFileOutput(fileName, MODE_PRIVATE);
 
 //                    写入内容
-                    String fileContent = "明文：" + edText.getText().toString() + "\n\n" +
-                            "Base64编码：" + tvTextBase64Encrypt.getText().toString() + "\n\n" +
-                            "Base64解码：" + tvTextBase64Decrypt.getText().toString() + "\n\n" +
+                    String fileContent =
+                            "加密算法: RSA加密算法"+ "\n\n" +
+                            "生成密钥对位数: " + keyPairGen.getKeySize() + "\n\n" +
+
+                            "公钥长度: " + keyPairGen.getPublicKeyBase64().length() + "\n" +
+                            "公钥Base64编码: " + keyPairGen.getPublicKeyBase64() + "\n\n\n" +
+                            "私钥长度: " + keyPairGen.getPrivateKeyBase64().length() + "\n" +
+                            "私钥Base64编码: " + keyPairGen.getPrivateKeyBase64() + "\n\n" +
+
+                            "明文：" + edText.getText().toString() + "\n\n" +
+//                            "Base64编码：" + tvTextBase64Encrypt.getText().toString() + "\n\n" +
+//                            "Base64解码：" + tvTextBase64Decrypt.getText().toString() + "\n\n" +
                             "RSA加密：" + tvTextRasEncrypt.getText().toString() + "\n\n" +
                             "RSA解密：" + tvTextRasDecrypt.getText().toString() + "\n\n" +
                             "RSA数字签名：" + tvTextRasSignEncrypt.getText().toString() + "\n\n" +
@@ -285,8 +362,8 @@ public class MainActivity1 extends AppCompatActivity
                             "存储类型: 内部存储" + "\n\n" +
                             "存储文件路径：" + getFilesDir().getAbsolutePath() + "/" + fileName + "\n\n" +
                             "author: GeekGray" + "\n" +
-                            "date: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS" ).format(new Date())+ "\n" +
-                            "verison: 1.0.0";
+                            "date: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS").format(new Date()) + "\n" +
+                            "version: 1.0.2";
 
                     //写入方法和冲刷方法
                     outputStream.write(fileContent.getBytes());

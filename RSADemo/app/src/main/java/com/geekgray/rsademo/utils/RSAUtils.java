@@ -1,19 +1,25 @@
 package com.geekgray.rsademo.utils;
 
+import com.geekgray.rsademo.entity.KeyPairGen;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
@@ -26,54 +32,141 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 
 /**
- * @author Mr.Zheng
- * @date 2014年8月22日 下午1:44:23
+ * author : GeekGray
+ * email  : GeekGray@163.com
+ * date   : 2020/11/13 10:49
+ * desc   :
  */
 public final class RSAUtils
 {
-    /*android客户端用这个*/
+    /*用RSA生成instance*/
     private static String RSA = "RSA/ECB/PKCS1Padding";
-    /*java 服务器端用这个*/
-//    private static String RSA = "RSA";
 
 
-    /**
-     * 随机生成RSA密钥对(默认密钥长度为1024)
-     *
+//    /**
+//     * 随机生成RSA密钥对(默认密钥长度为1024)
+//     *
+//     * @return
+//     */
+//    public static KeyPair generateRSAKeyPair()
+//    {
+//        return generateRSAKeyPair(1024);
+//    }
+//
+//    /**
+//     * 随机生成RSA密钥对
+//     *
+//     * @param keyLength 密钥长度，范围：512～2048<br>
+//     *                  一般1024
+//     *
+//     * @return
+//     */
+//    public static KeyPair generateRSAKeyPair(int keyLength)
+//    {
+//        try
+//        {
+//            KeyPairGenerator kpg = KeyPairGenerator.getInstance(RSA);
+//            kpg.initialize(keyLength);
+//            return kpg.genKeyPair();
+//        }
+//        catch (NoSuchAlgorithmException e)
+//        {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
+    /*
+     * @Author GeekGray
+     * @Description 随机生成密钥对并写入文件RSA
+     * @Date
      * @return
-     */
-    public static KeyPair generateRSAKeyPair()
+     **/
+    private static void generateKeyPair() throws Exception
     {
-        return generateRSAKeyPair(1024);
-    }
+        KeyPairGen keyPairGen = new KeyPairGen();
 
-    /**
-     * 随机生成RSA密钥对
-     *
-     * @param keyLength 密钥长度，范围：512～2048<br>
-     *                  一般1024
-     *
-     * @return
-     */
-    public static KeyPair generateRSAKeyPair(int keyLength)
-    {
+        //     /** RSA算法要求有一个可信任的随机数源 */
+        //     SecureRandom secureRandom = new SecureRandom();
+        /** 为RSA算法创建一个KeyPairGenerator对象 */
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(keyPairGen.ALGORITHM);
+
+        /** 利用上面的随机数据源初始化这个KeyPairGenerator对象 */
+        //     keyPairGenerator.initialize(KEYSIZE, secureRandom);
+        keyPairGenerator.initialize(keyPairGen.getKeySize());
+
+        /** 生成密匙对 */
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+        /** 得到公钥 */
+        Key publicKey = keyPair.getPublic();
+
+        /** 得到私钥 */
+        Key privateKey = keyPair.getPrivate();
+
+        ObjectOutputStream oos1 = null;
+        ObjectOutputStream oos2 = null;
         try
         {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance(RSA);
-            kpg.initialize(keyLength);
-            return kpg.genKeyPair();
+            /** 用对象流将生成的密钥写入文件 */
+            oos1 = new ObjectOutputStream(new FileOutputStream(keyPairGen.PUBLIC_KEY_FILE));
+            oos2 = new ObjectOutputStream(new FileOutputStream(keyPairGen.PRIVATE_KEY_FILE));
+            oos1.writeObject(publicKey);
+            oos2.writeObject(privateKey);
         }
-        catch (NoSuchAlgorithmException e)
+        catch (Exception e)
         {
-            e.printStackTrace();
-            return null;
+            throw e;
+        }
+        finally
+        {
+            /** 清空缓存，关闭文件输出流 */
+            oos1.close();
+            oos2.close();
         }
     }
 
+    public static KeyPairGen genKeyPair(KeyPairGen keyPairGen) throws NoSuchAlgorithmException
+    {
+        /** RSA算法要求有一个可信任的随机数源 */
+        SecureRandom secureRandom = new SecureRandom();
+
+        /** 为RSA算法创建一个KeyPairGenerator对象 */
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(keyPairGen.ALGORITHM);
+
+        /** 利用上面的随机数据源初始化这个KeyPairGenerator对象 */
+        keyPairGenerator.initialize(keyPairGen.getKeySize(), secureRandom);
+        //keyPairGenerator.initialize(KEYSIZE);
+
+        /** 生成密匙对 */
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+        /** 得到公钥 */
+        Key publicKey = keyPair.getPublic();
+
+        /** 得到私钥 */
+        Key privateKey = keyPair.getPrivate();
+
+        byte[] publicKeyBytes = publicKey.getEncoded();
+        byte[] privateKeyBytes = privateKey.getEncoded();
+
+//        String publicKeyBase64 = new BASE64Encoder().encode(publicKeyBytes);
+//        String privateKeyBase64 = new BASE64Encoder().encode(privateKeyBytes);
+
+//        String publicKeyBase64 = Base64.encode(publicKeyBytes);//Base64类
+//        String privateKeyBase64 = Base64.encode(privateKeyBytes);
+
+        keyPairGen.setPublicKeyBase64(Base64Utils.encode(publicKeyBytes));//Base64Utils类
+        keyPairGen.setPrivateKeyBase64(Base64Utils.encode(privateKeyBytes));
+
+        return keyPairGen;
+    }
+
+
     /**
-     * 使用公钥对明文进行加密
+     * RSA使用公钥对明文进行加密
      *
-     * @param publicKey 公钥
+     * @param publicKey 公钥字符串
      * @param plainText 明文
      *
      * @return
@@ -83,9 +176,9 @@ public final class RSAUtils
         try
         {
             Cipher cipher = Cipher.getInstance(RSA);
-            cipher.init(Cipher.ENCRYPT_MODE, getPublicKey(publicKey));
-            byte[] bytes = plainText.getBytes();
-            ByteArrayInputStream read = new ByteArrayInputStream(bytes);
+            cipher.init(Cipher.ENCRYPT_MODE, getPublicKey(publicKey));//通过公钥字符串生成公钥
+            byte[] bytes = plainText.getBytes();//把明文字符串写进字节流
+            ByteArrayInputStream read = new ByteArrayInputStream(bytes);//创建输入流
             ByteArrayOutputStream write = new ByteArrayOutputStream();
             byte[] buf = new byte[117];
             int len = 0;
@@ -146,7 +239,7 @@ public final class RSAUtils
             byte[] bytes = Base64.decode(enStr);
             ByteArrayInputStream read = new ByteArrayInputStream(bytes);
             ByteArrayOutputStream write = new ByteArrayOutputStream();
-            byte[] buf = new byte[128];
+            byte[] buf = new byte[512];
             int len = 0;
             while ((len = read.read(buf)) != -1)
             {
@@ -202,11 +295,12 @@ public final class RSAUtils
     public static PublicKey getPublicKey(String key) throws Exception
     {
         byte[] keyBytes;
-//        keyBytes = (new BASE64Decoder()).decodeBuffer(key);
+
         keyBytes = Base64.decode(key);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PublicKey publicKey = keyFactory.generatePublic(keySpec);
+
         return publicKey;
     }
 
@@ -220,11 +314,12 @@ public final class RSAUtils
     public static PrivateKey getPrivateKey(String key) throws Exception
     {
         byte[] keyBytes;
-//        keyBytes = (new BASE64Decoder()).decodeBuffer(key);
+
         keyBytes = Base64.decode(key);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+
         return privateKey;
     }
 
@@ -401,7 +496,7 @@ public final class RSAUtils
         try
         {
             byte[] buffer = Base64Utils.decode(privateKeyStr);
-            // X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
+
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(buffer);
             KeyFactory keyFactory = KeyFactory.getInstance(RSA);
             return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);

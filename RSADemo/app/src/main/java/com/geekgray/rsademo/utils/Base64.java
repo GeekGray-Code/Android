@@ -6,6 +6,12 @@
 
 package com.geekgray.rsademo.utils;
 
+/**
+ * author : GeekGray 
+ * email  : GeekGray@163.com
+ * date   : 2020/11/13 10:59
+ * desc   : 基于64个可打印字符来表示二进制数据的方法
+*/
 public final class Base64
 {
 

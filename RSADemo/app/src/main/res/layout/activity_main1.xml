@@ -27,6 +27,47 @@
             android:layout_marginRight="30dp"
             android:orientation="vertical">
 
+            <android.support.v7.widget.AppCompatSpinner
+                android:overScrollMode="always"
+                android:spinnerMode="dialog"
+                android:popupBackground="@color/colorAccent"
+                android:id="@+id/generate_keybit_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:prompt="@string/keybits_label"
+                android:entries="@array/key_bits"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/generate_rsa_publickey_btn"
+                style="@style/ButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="生成RSA密钥对" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_text_generate_rsa_publickey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="生成的RSA密钥对："/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:visibility="gone"
+                android:id="@+id/generate_rsa_privatekey_btn"
+                style="@style/ButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="生成RSA私钥" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:visibility="gone"
+                android:id="@+id/tv_text_generate_rsa_privatekey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="生成的RSA私钥："/>
+
             <com.geekgray.rsademo.view.ClearEditText
                 android:id="@+id/ed_text"
                 style="@style/EditTextStyle"
@@ -40,6 +81,7 @@
 
 
             <android.support.v7.widget.AppCompatButton
+                android:visibility="gone"
                 android:id="@+id/base64_btn_encrypt"
                 style="@style/ButtonStyle"
                 android:layout_width="match_parent"
@@ -48,12 +90,14 @@
                 android:text="Base64编码" />
 
             <android.support.v7.widget.AppCompatTextView
+                android:visibility="gone"
                 android:id="@+id/tv_text_base64_encrypt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Base64编码后："/>
 
             <android.support.v7.widget.AppCompatButton
+                android:visibility="gone"
                 android:id="@+id/base64_btn_decrypt"
                 style="@style/ButtonStyle"
                 android:layout_width="match_parent"
@@ -62,6 +106,7 @@
                 android:text="Base64解码" />
 
             <android.support.v7.widget.AppCompatTextView
+                android:visibility="gone"
                 android:id="@+id/tv_text_base64_decrypt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

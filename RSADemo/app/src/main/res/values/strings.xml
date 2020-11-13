@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RSADemo</string>
+    <string name="keybits_label">生成密钥位数(默认1024位)</string>
 </resources>

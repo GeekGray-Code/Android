@@ -3,8 +3,11 @@ package com.geekgray.rsademo.utils;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Created by kay on 16/8/25.
- */
+ * author : GeekGray
+ * email  : GeekGray@163.com
+ * date   : 2020/11/13 10:49
+ * desc   :
+*/
 public class Base64Utils
 {
 
