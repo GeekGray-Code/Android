@@ -18,6 +18,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,6 +84,7 @@ public class MainActivity1 extends AppCompatActivity
 
 
     private static String content = null;
+    private String fileName = null;
     /* 密钥内容 base64 code */
     private static String PUCLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+iRXVDOsZikPvaIwzTDhcKx3r\n" +
             "SZNbB/H/MrdUj/GkiSgDL7bTXjyb0cAwefD+/JxXBy6EMuPzBMt7flTWNXGBUNvw\n" +
@@ -110,8 +113,6 @@ public class MainActivity1 extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main1);
         ButterKnife.bind(this);
-
-//        initView();
         setListener();
     }
 
@@ -121,8 +122,6 @@ public class MainActivity1 extends AppCompatActivity
      */
     private void getContent()
     {
-//       content="SFDDDDFSFSFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFFSFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSFSFSDFSDFSDFSDFSDFSFSDFSFSSDFSDFSDFSDFSFSDFSFSDF";
-//       content = "143SDFFSFSDFS423";
         content = edText.getText().toString().trim();
     }
 
@@ -171,7 +170,7 @@ public class MainActivity1 extends AppCompatActivity
             {
                 getContent();
                 Toast.makeText(MainActivity1.this, "RSA加密", Toast.LENGTH_SHORT).show();
-//                ToastUtils.show("RSA加密");
+
                 /**加密内容*/
                 try
                 {
@@ -232,7 +231,7 @@ public class MainActivity1 extends AppCompatActivity
             public void onClick(View view)
             {
                 getContent();
-                Toast.makeText(MainActivity1.this, "Base64加密", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity1.this, "Base64编码", Toast.LENGTH_SHORT).show();
                 Log.d("TAG", "content=" + content);
                 String encode = Base64Utils.encode(content.getBytes());
                 Log.d("TAG", "encode=" + encode);
@@ -249,7 +248,7 @@ public class MainActivity1 extends AppCompatActivity
             public void onClick(View view)
             {
                 getContent();
-                Toast.makeText(MainActivity1.this, "Base64解密", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity1.this, "Base64解码", Toast.LENGTH_SHORT).show();
                 String str = tvTextBase64Encrypt.getText().toString().trim();
                 Log.d("TAG", "str=" + str);
                 byte[] decode = Base64Utils.decode(str);
@@ -266,16 +265,30 @@ public class MainActivity1 extends AppCompatActivity
             {
                 try
                 {
-                    //用MODE_PRIVAT模式，创建一个 rsaencrypt.txt文件
-                    FileOutputStream outputStream = openFileOutput("rsaencrypt.txt", MODE_PRIVATE);
-                    //写入方法和冲刷方法
+                    fileName=edTextFileName.getText().toString().trim() + ".txt";
+                    //用MODE_PRIVAT模式，用输入的文件名创建一个 rsaencrypt.txt文件,若输入为空则用默认文件名
+                    if (edTextFileName.getText().toString().trim().isEmpty())
+                    {
+                        fileName = "rsaencrypt.txt";
+                    }
+                    FileOutputStream outputStream = openFileOutput(fileName, MODE_PRIVATE);
+
+//                    写入内容
                     String fileContent = "明文：" + edText.getText().toString() + "\n\n" +
-                            "Base64加密：" + tvTextBase64Encrypt.getText().toString() + "\n\n" +
-                            "Base64解密：" + tvTextBase64Decrypt.getText().toString() + "\n\n" +
-                            "Rsa加密：" + tvTextRasEncrypt.getText().toString() + "\n\n" +
-                            "Rsa解密：" + tvTextRasDecrypt.getText().toString() + "\n\n" +
-                            "Rsa数字签名：" + tvTextRasSignEncrypt.getText().toString() + "\n\n" +
-                            "Rsa验证：" + tvTextRasSignDecrypt.getText().toString();
+                            "Base64编码：" + tvTextBase64Encrypt.getText().toString() + "\n\n" +
+                            "Base64解码：" + tvTextBase64Decrypt.getText().toString() + "\n\n" +
+                            "RSA加密：" + tvTextRasEncrypt.getText().toString() + "\n\n" +
+                            "RSA解密：" + tvTextRasDecrypt.getText().toString() + "\n\n" +
+                            "RSA数字签名：" + tvTextRasSignEncrypt.getText().toString() + "\n\n" +
+                            "RSA验证：" + tvTextRasSignDecrypt.getText().toString() + "\n\n\n" +
+                            "存储文件: " + fileName + "\n\n" +
+                            "存储类型: 内部存储" + "\n\n" +
+                            "存储文件路径：" + getFilesDir().getAbsolutePath() + "/" + fileName + "\n\n" +
+                            "author: GeekGray" + "\n" +
+                            "date: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS" ).format(new Date())+ "\n" +
+                            "verison: 1.0.0";
+
+                    //写入方法和冲刷方法
                     outputStream.write(fileContent.getBytes());
                     outputStream.flush();
                     Toast.makeText(MainActivity1.this, "保存完成", Toast.LENGTH_SHORT).show();
@@ -304,7 +317,7 @@ public class MainActivity1 extends AppCompatActivity
                 FileInputStream inputStream = null;
                 try
                 {
-                    inputStream = openFileInput("rsaencrypt.txt");
+                    inputStream = openFileInput(fileName);
                     int len = 0;
                     while ((len = inputStream.read(bytes)) != -1)
                     {

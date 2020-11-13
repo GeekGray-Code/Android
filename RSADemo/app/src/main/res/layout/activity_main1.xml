@@ -8,20 +8,13 @@
     tools:ignore="HardcodedText">
 
     <com.hjq.bar.TitleBar
+        style="@style/ButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:backButton="false"
-        app:title="RSA加密算法" />
+        app:title="基于RSA算法的加解密系统" />
 
-    <com.geekgray.rsademo.view.ClearEditText
-        android:id="@+id/ed_text"
-        style="@style/EditTextStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="40dp"
-        android:text="请输入需要加密的明文" />
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -34,6 +27,17 @@
             android:layout_marginRight="30dp"
             android:orientation="vertical">
 
+            <com.geekgray.rsademo.view.ClearEditText
+                android:id="@+id/ed_text"
+                style="@style/EditTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="40dp"
+                android:hint="请输入需要加密的明文"
+                android:text="" />
+
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/base64_btn_encrypt"
@@ -41,13 +45,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Base64加密" />
+                android:text="Base64编码" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_text_base64_encrypt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Base64加密后："/>
+                android:text="Base64编码后："/>
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/base64_btn_decrypt"
@@ -55,13 +59,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Base64解密" />
+                android:text="Base64解码" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_text_base64_decrypt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Base64解密后："/>
+                android:text="Base64解码后："/>
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/rsa_btn_encrypt"
@@ -127,7 +131,8 @@
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="40dp"
-                android:text="输入指定存储加密文件的文件名" />
+                android:hint="输入指定存储加密文件的文件名（如：rsaencryptfile），若为空，则使用默认存储文件rsaencrypt.txt存储"
+                android:text="" />
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/savefile_btn_ecrypt"
@@ -150,7 +155,18 @@
                 android:id="@+id/tv_text_readfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="加密文件读取中......"/>
+                android:text="加密文件待读取......"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="" />
+
+            <View style="@style/HorizontalLineStyle" />
 
         </LinearLayout>
 

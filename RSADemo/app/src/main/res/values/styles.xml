@@ -72,7 +72,7 @@
     <style name="HorizontalLineStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/line_size</item>
-        <item name="android:background">@color/colorLine</item>
+        <item name="android:background">@color/colorAccent</item>
     </style>
 
     <!-- 默认垂直分割线样式 -->
